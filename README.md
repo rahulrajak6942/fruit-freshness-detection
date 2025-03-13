@@ -1,62 +1,195 @@
-# **Automated Fruit Freshness Detection & Sorting System for Conveyor Belts**  
+# **Fruit Freshness & Industrial Conveyor Belt Automation using ROS **  
+
+This project uses a **camera-based detection system** integrated with a **conveyor belt motor** controlled via **ROS**. The system can be applied to **fruit freshness detection** as well as **industrial automation**, including **product sorting, quality control, and expiry-based rejection**.  
 
 ## **Project Overview**  
-This project is an **AI-powered fruit freshness detection and sorting system** designed for **conveyor belt automation**. The system integrates **YOLO (You Only Look Once) for object detection**, **ROS (Robot Operating System) for real-time processing**, and **sensor-based expiry date detection** to classify and sort fruits based on their freshness. The goal is to automate quality control in **food processing industries, warehouses, and agricultural setups**.  
+- **Camera-based object detection** for freshness, quality, or product classification.  
+- **YOLO & OpenCV** for image processing and real-time analysis.  
+- **ROS-based motor control** for conveyor belt movement.  
+- **Customizable** for various industries, including food, pharmaceuticals, and manufacturing.  
 
-## **Key Features**  
- **YOLO-based Object Detection**: Accurately detects and classifies fruits on the conveyor.  
- **Freshness Classification**: Uses a deep learning model to determine if a fruit is fresh or rotten.  
- **Expiry Date Detection**: Integrates sensors (such as **gas sensors** for ethylene detection or **RFID scanners**) to determine shelf life.  
- **ROS Integration**: Enables real-time communication between the camera, detection system, and motor controllers.  
- **Motorized Sorting Mechanism**: Automatically rotates the motor to divert fruits based on classification.  
- **IoT Connectivity (Future Scope)**: Allows remote monitoring and data logging.  
-
-## **Technology Stack**  
-🔹 **Deep Learning & Computer Vision**: YOLOv8, OpenCV, PyTorch  
-🔹 **Embedded Systems & Sensors**: Raspberry Pi / Arduino, RFID sensors, Gas Sensors (for spoilage detection)  
-🔹 **ROS for Real-Time Processing**: Communication between camera, sensors, and motors  
-🔹 **Motor Control**: Servo/Motor driver for conveyor belt sorting  
-🔹 **Cloud & IoT (Future Enhancement)**: Remote monitoring and data analytics  
-
-## **How It Works**  
-1. **YOLO-Based Object Detection**: The camera captures images of fruits on the conveyor belt and detects their type.  
-2. **Freshness Classification**:  
-   - A deep learning model predicts if the fruit is **fresh or rotten** based on visual characteristics.  
-   - Sensors detect spoilage gases or check expiry tags (for packed products).  
-3. **ROS-Based Processing**:  
-   - The detected information is sent via ROS nodes to control the sorting mechanism.  
-   - ROS ensures seamless communication between sensors, motors, and the detection system.  
-4. **Motorized Sorting System**:  
-   - If **fresh**, the motor moves the fruit to the **"Fresh"** section.  
-   - If **rotten or expired**, the system diverts it to the **"Reject"** section.  
-5. **Real-Time Monitoring & Data Logging** (Future Scope):  
-   - IoT integration can enable cloud storage of detection results.  
-   - Alerts and reports can be generated for quality control.  
+---
 
 ## **Applications**  
-🔸 **Food Processing & Packaging Industries**  
-🔸 **Supermarkets & Warehouses** (Automated sorting for quality control)  
-🔸 **Agriculture & Post-Harvest Processing**  
-🔸 **Smart Supply Chains with IoT Monitoring**  
+🔹 **Fruit Freshness Detection** – Moves fresh fruits forward, removes spoiled ones.  
+🔹 **Industrial Sorting** – Classifies products based on labels, expiry dates, and defects.  
+🔹 **Automated Quality Control** – Detects damages, irregularities, and missing components.  
+🔹 **Smart Manufacturing** – Controls conveyor movement based on product type.  
+
+---
+
+## **System Architecture**  
+
+### **1. Object Detection Node (YOLO & OpenCV)**  
+- Uses a **camera** to capture images of products on the conveyor belt.  
+- YOLO (You Only Look Once) **detects freshness, quality, or defects**.  
+- The detection result is **published to a ROS topic `/detection_status`**.  
+
+### **2. Conveyor Belt Motor Control Node**  
+- Subscribes to **`/detection_status`** topic.  
+- If a product is **fresh/valid**, the **conveyor moves forward**.  
+- If a product is **spoiled/expired/defective**, the **conveyor stops or diverts**.  
+
+---
+
+## **Installation & Setup**  
+
+### **1. Install ROS (if not installed)**  
+Follow the official ROS Noetic installation guide:  
+🔗 [ROS Noetic Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)  
+
+### **2. Clone This Repository**  
+```bash
+git clone https://github.com/rahulrajak6942/fruit-freshness-detection.git
+cd fruit-freshness-detection
+```
+
+### **3. Create a ROS Package**  
+```bash
+cd ~/catkin_ws/src
+catkin_create_pkg conveyor_belt std_msgs rospy
+```
+
+### **4. Copy the Scripts**  
+```bash
+cp -r fruit-freshness-detection/conveyer_belt ~/catkin_ws/src/conveyor_belt/
+```
+
+### **5. Install Dependencies**  
+```bash
+pip install opencv-python numpy torch torchvision
+```
+
+### **6. Build the Package**  
+```bash
+cd ~/catkin_ws
+catkin_make
+source devel/setup.bash
+```
+
+---
+
+## **Running the System**  
+
+### **Step 1: Start ROS Master**  
+```bash
+roscore
+```
+
+### **Step 2: Run the Object Detection Node (YOLO + OpenCV)**  
+```bash
+rosrun conveyor_belt object_detection.py
+```
+
+### **Step 3: Run the Conveyor Belt Motor Controller**  
+```bash
+rosrun conveyor_belt motor_control.py
+```
+
+---
+
+## **Code Explanation**  
+
+### **1. Object Detection Node (YOLO + OpenCV)**
+This script detects freshness, expiry, or defects and publishes the result.  
+
+```python
+import rospy
+from std_msgs.msg import String
+import cv2
+import torch
+from torchvision import transforms
+
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+
+def detect_and_publish():
+    rospy.init_node('object_detector', anonymous=True)
+    pub = rospy.Publisher('/detection_status', String, queue_size=10)
+    cap = cv2.VideoCapture(0)  
+
+    while not rospy.is_shutdown():
+        ret, frame = cap.read()
+        if not ret:
+            continue
+        
+        results = model(frame)
+        detected_labels = results.pandas().xyxy[0]['name'].tolist()
+
+        status = "fresh" if "fresh_fruit" in detected_labels else "not_fresh"
+        pub.publish(status)
+
+        cv2.imshow("Detection", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    detect_and_publish()
+```
+
+---
+
+### **2. Conveyor Belt Motor Control Node**  
+Controls the conveyor belt based on the detection result.  
+
+```python
+import rospy
+from std_msgs.msg import String
+import RPi.GPIO as GPIO
+
+MOTOR_PIN = 18  
+
+def control_motor(status):
+    if status == "fresh":
+        GPIO.output(MOTOR_PIN, GPIO.HIGH)  
+    else:
+        GPIO.output(MOTOR_PIN, GPIO.LOW)  
+
+def callback(data):
+    rospy.loginfo("Received status: %s", data.data)
+    control_motor(data.data)
+
+def motor_controller():
+    rospy.init_node('motor_controller', anonymous=True)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(MOTOR_PIN, GPIO.OUT)
+
+    rospy.Subscriber("/detection_status", String, callback)
+    rospy.spin()
+
+if __name__ == "__main__":
+    try:
+        motor_controller()
+    except rospy.ROSInterruptException:
+        GPIO.cleanup()
+```
+
+---
 
 ## **Future Enhancements**  
-🚀 Multi-fruit classification (apples, bananas, mangoes, etc.)  
-🚀 AI-based **ripeness prediction**  
-🚀 IoT-enabled **cloud monitoring dashboard**  
-🚀 Autonomous robotic arm for more precise sorting  
+✅ **Multi-Product Sorting** – Move items to different paths based on category.  
+✅ **AI-Based Decision Making** – Improve classification using deep learning.  
+✅ **Cloud Integration** – Log results for remote monitoring.  
+✅ **Edge Processing** – Run on Jetson Nano / Raspberry Pi.  
 
-​You can find fruit freshness datasets on Kaggle that are suitable for  project datasets:
+---
+
+## **Datasets for Training & Testing**  
+You can use these datasets to train your model:  
 
 1. **Fruits Fresh and Rotten for Classification**  
-   This dataset contains images of fresh and rotten fruits, ideal for classification tasks.  
-   [Fruits Fresh and Rotten for Classification](https://www.kaggle.com/datasets/sriramr/fruits-fresh-and-rotten-for-classification)
+   [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/sriramr/fruits-fresh-and-rotten-for-classification)  
 
 2. **Fresh and Stale Images of Fruits and Vegetables**  
-   This dataset includes images of six fruits and vegetables, each labeled as fresh or stale.  
-   [Fresh and Stale Images of Fruits and Vegetables](https://www.kaggle.com/datasets/raghavrpotdar/fresh-and-stale-images-of-fruits-and-vegetables)
+   [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/raghavrpotdar/fresh-and-stale-images-of-fruits-and-vegetables)  
 
-3. **Food Freshness**  
-   This dataset contains images of carrots, tomatoes, and oranges, categorized into three freshness classes.  
-   [Food Freshness](https://www.kaggle.com/datasets/alinesellwia/food-freshness)
+3. **Food Freshness Dataset**  
+   [🔗 Kaggle Dataset](https://www.kaggle.com/datasets/alinesellwia/food-freshness)  
 
-These datasets should provide a solid foundation for developing and testing your fruit freshness detection system. 
+---
+
+## **Author**  
+👤 **Rahul Rajak**  
+🔗 [GitHub Profile](https://github.com/rahulrajak6942)  
