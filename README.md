@@ -2,12 +2,12 @@
 
 This project integrates **AI-based vision detection** with a **ROS-controlled conveyor belt system**. It can be used for **fruit freshness detection**, **product sorting**, **quality control**, and **expiry-based rejection** in industries like **food processing, pharmaceuticals, and manufacturing**.  
 
-🚀 **Key Technologies Used:**  
-✅ **Python** – Core programming language.  
-✅ **OpenCV** – Image processing and real-time analysis.  
-✅ **TensorFlow/PyTorch** – Deep learning for object classification.  
-✅ **YOLO** – Fast and efficient object detection.  
-✅ **ROS** – Controls the motorized conveyor belt.  
+ **Key Technologies Used:**  
+ **Python** – Core programming language.  
+ **OpenCV** – Image processing and real-time analysis.  
+ **TensorFlow/PyTorch** – Deep learning for object classification.  
+ **YOLO** – Fast and efficient object detection.  
+ **ROS** – Controls the motorized conveyor belt.  
 
 ---
 
@@ -170,10 +170,10 @@ if __name__ == "__main__":
 ---
 
 ## **Future Enhancements**  
-✅ **Multi-Product Sorting** – Move items to different paths based on category.  
-✅ **AI-Based Decision Making** – Improve classification using deep learning.  
-✅ **Cloud Integration** – Log results for remote monitoring.  
-✅ **Edge Processing** – Run on Jetson Nano / Raspberry Pi.  
+**Multi-Product Sorting** – Move items to different paths based on category.  
+**AI-Based Decision Making** – Improve classification using deep learning.  
+**Cloud Integration** – Log results for remote monitoring.  
+**Edge Processing** – Run on Jetson Nano / Raspberry Pi.  
 
 ---
 
