@@ -1,12 +1,13 @@
-## **Fruit Freshness & Industrial Conveyor Belt Automation using ROS **  
+# **Fruit Freshness & Industrial Conveyor Belt Automation using ROS**  
 
-This project uses a **camera-based detection system** integrated with a **conveyor belt motor** controlled via **ROS**. The system can be applied to **fruit freshness detection** as well as **industrial automation**, including **product sorting, quality control, and expiry-based rejection**.  
+This project integrates **AI-based vision detection** with a **ROS-controlled conveyor belt system**. It can be used for **fruit freshness detection**, **product sorting**, **quality control**, and **expiry-based rejection** in industries like **food processing, pharmaceuticals, and manufacturing**.  
 
-## **Project Overview**  
-- **Camera-based object detection** for freshness, quality, or product classification.  
-- **YOLO & OpenCV** for image processing and real-time analysis.  
-- **ROS-based motor control** for conveyor belt movement.  
-- **Customizable** for various industries, including food, pharmaceuticals, and manufacturing.  
+🚀 **Key Technologies Used:**  
+✅ **Python** – Core programming language.  
+✅ **OpenCV** – Image processing and real-time analysis.  
+✅ **TensorFlow/PyTorch** – Deep learning for object classification.  
+✅ **YOLO** – Fast and efficient object detection.  
+✅ **ROS** – Controls the motorized conveyor belt.  
 
 ---
 
@@ -192,4 +193,4 @@ You can use these datasets to train your model:
 
 ## **Author**  
 👤 **Rahul Rajak**  
-🔗 [GitHub Profile](https://github.com/rahulrajak6942)  
+🔗 [GitHub Profile](https://github.com/rahulrajak6942)
