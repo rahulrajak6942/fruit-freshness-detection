@@ -44,3 +44,19 @@ This project is an **AI-powered fruit freshness detection and sorting system** d
 🚀 AI-based **ripeness prediction**  
 🚀 IoT-enabled **cloud monitoring dashboard**  
 🚀 Autonomous robotic arm for more precise sorting  
+
+​You can find fruit freshness datasets on Kaggle that are suitable for  project datasets:
+
+1. **Fruits Fresh and Rotten for Classification**  
+   This dataset contains images of fresh and rotten fruits, ideal for classification tasks.  
+   [Fruits Fresh and Rotten for Classification](https://www.kaggle.com/datasets/sriramr/fruits-fresh-and-rotten-for-classification)
+
+2. **Fresh and Stale Images of Fruits and Vegetables**  
+   This dataset includes images of six fruits and vegetables, each labeled as fresh or stale.  
+   [Fresh and Stale Images of Fruits and Vegetables](https://www.kaggle.com/datasets/raghavrpotdar/fresh-and-stale-images-of-fruits-and-vegetables)
+
+3. **Food Freshness**  
+   This dataset contains images of carrots, tomatoes, and oranges, categorized into three freshness classes.  
+   [Food Freshness](https://www.kaggle.com/datasets/alinesellwia/food-freshness)
+
+These datasets should provide a solid foundation for developing and testing your fruit freshness detection system. 
