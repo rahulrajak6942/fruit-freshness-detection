@@ -1,4 +1,4 @@
-# **Fruit Freshness & Industrial Conveyor Belt Automation using ROS **  
+## **Fruit Freshness & Industrial Conveyor Belt Automation using ROS **  
 
 This project uses a **camera-based detection system** integrated with a **conveyor belt motor** controlled via **ROS**. The system can be applied to **fruit freshness detection** as well as **industrial automation**, including **product sorting, quality control, and expiry-based rejection**.  
 
